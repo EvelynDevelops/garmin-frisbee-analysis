@@ -1,4 +1,5 @@
 {
+  "_warning": "Do NOT put real credentials here. Use environment variables instead: GARMIN_EMAIL and GARMIN_PASSWORD. Committing a real password risks account compromise.",
   "email": "your-email@example.com",
   "password": "your-password"
 }
