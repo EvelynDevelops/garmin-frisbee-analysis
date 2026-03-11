@@ -4,7 +4,7 @@ description: Ultimate Frisbee performance analytics powered by Garmin data. Ask 
 version: 1.1.1
 author: Evelyn & Claude
 homepage: https://github.com/EvelynDevelops/garmin-frisbee-analysis
-metadata: {"clawdbot":{"emoji":"🥏","requires":{"env":["GARMIN_EMAIL","GARMIN_PASSWORD"]},"install":[{"id":"garminconnect","kind":"python","package":"garminconnect","label":"Install garminconnect (pip)"},{"id":"fitparse","kind":"python","package":"fitparse","label":"Install fitparse (pip)"},{"id":"gpxpy","kind":"python","package":"gpxpy","label":"Install gpxpy (pip)"}]}}
+metadata: {"clawdbot":{"emoji":"🥏","requires":{"env":["GARMIN_EMAIL","GARMIN_PASSWORD"]},"install":[{"id":"garminconnect","kind":"python","package":"garminconnect","label":"Install garminconnect (pip)"},{"id":"fitparse","kind":"python","package":"fitparse","label":"Install fitparse (pip)"},{"id":"gpxpy","kind":"python","package":"gpxpy","label":"Install gpxpy (pip)"},{"id":"garmin-auth","kind":"shell","command":"python3 scripts/garmin_auth.py login","label":"Authenticate with Garmin Connect"}]}}
 ---
 
 # Garmin Frisbee Analysis

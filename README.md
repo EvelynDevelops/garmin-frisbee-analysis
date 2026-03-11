@@ -68,12 +68,11 @@ garmin-frisbee-analysis/
 │   ├── frisbee_activity.py          # Post-game analysis dashboard
 │   ├── frisbee_tournament.py        # Tournament review dashboard
 │   └── frisbee_compare.py           # Comparison & season analysis
-├── references/
-│   ├── health_analysis.md           # Metric interpretation guide
-│   ├── api.md                       # Garmin Connect API docs
-│   ├── mcp_setup.md                 # Claude Desktop MCP setup
-│   └── extended_capabilities.md     # Advanced features
-└── config.example.json              # Credentials template
+└── references/
+    ├── health_analysis.md           # Metric interpretation guide
+    ├── api.md                       # Garmin Connect API docs
+    ├── mcp_setup.md                 # Claude Desktop MCP setup
+    └── extended_capabilities.md     # Advanced features
 ```
 
 ## 🔒 Privacy & Security
