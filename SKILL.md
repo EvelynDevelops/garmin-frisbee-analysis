@@ -37,7 +37,7 @@ Pinned versions are in [requirements.txt](requirements.txt):
 
 ### 2. Configure Credentials
 
-> **Why email + password?** Garmin does not expose a public OAuth API. The `garminconnect` library authenticates via Garmin's SSO, the same flow as the Garmin Connect mobile app. The password is used **once** during login and is **never written to disk or logged**. The resulting session token is stored locally at `~/.clawdbot/garmin/` (permissions 700); all subsequent API requests use that token.
+> **Why email + password?** Garmin does not expose a public OAuth API. The `garminconnect` library authenticates via Garmin's SSO, the same flow as the Garmin Connect mobile app. The password is used **once** during login and is **never written to disk or logged**. The resulting session token is then stored locally at `~/.clawdbot/garmin/` (permissions 700); all subsequent API requests use that token, not the password.
 
 Set `GARMIN_EMAIL` and `GARMIN_PASSWORD` in your shell profile (`~/.zshrc` or `~/.bashrc`):
 
