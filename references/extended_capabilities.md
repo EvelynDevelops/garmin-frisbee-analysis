@@ -1,15 +1,15 @@
 # Extended Garmin Capabilities — Frisbee Edition
 
-This skill supports **comprehensive frisbee performance tracking, time-based queries, and activity file analysis**.
+This skill supports **comprehensive frisbee performance tracking, time-based queries, and FIT file analysis**. Below is a full reference of what you can ask and how data is fetched.
+
+---
 
 ## 🎯 Time-Based Queries
 
 Ask questions like:
 - "What was my heart rate at halftime yesterday?"
-- "What was my Body Battery before the game started at 10am?"
+- "What was my Body Battery before the game at 10am?"
 - "How stressed was I between games?"
-
-### Usage
 
 ```bash
 # Heart rate at specific time
@@ -25,10 +25,7 @@ python3 scripts/garmin_query.py stress "14:30"
 python3 scripts/garmin_query.py steps "17:00"
 ```
 
-**Time formats supported:**
-- `3:00 PM`, `3 PM` (12-hour)
-- `15:00`, `15:30:45` (24-hour)
-- `2026-03-08 15:30` (full datetime)
+**Time formats supported:** `3:00 PM` · `15:00` · `2026-03-08 15:30`
 
 ---
 
@@ -37,39 +34,39 @@ python3 scripts/garmin_query.py steps "17:00"
 ### Training & Performance
 
 ```bash
-# Training readiness (are you ready for today's game/practice?)
+# Training readiness (ready for today's game/practice?)
 python3 scripts/garmin_data_extended.py training_readiness
 
-# Training status (load, VO2 max trends — track fitness gains across season)
+# Training status (load, VO2 max trends)
 python3 scripts/garmin_data_extended.py training_status
 
-# Endurance score (relevant for full-day tournament performance)
+# Endurance score (relevant for full-day tournament stamina)
 python3 scripts/garmin_data_extended.py endurance_score
 
-# Max metrics (VO2 max — tracks aerobic capacity improvements)
+# VO2 max (aerobic capacity — track improvements across season)
 python3 scripts/garmin_data_extended.py max_metrics
 
 # Fitness age
 python3 scripts/garmin_data_extended.py fitness_age
 ```
 
-### Body Composition & Health
+### Body & Health
 
 ```bash
 # Body composition (weight, body fat %, muscle mass, BMI)
 python3 scripts/garmin_data_extended.py body_composition --date 2026-03-08
 
-# Weight history (across season)
+# Weight history across season
 python3 scripts/garmin_data_extended.py weigh_ins --start 2026-01-01 --end 2026-03-08
 
-# Blood oxygen (SPO2) — useful for altitude tournaments
+# Blood oxygen (SpO2) — useful for altitude tournaments
 python3 scripts/garmin_data_extended.py spo2 --date 2026-03-08
 
 # Respiration (breathing rate — elevated after high-intensity game)
 python3 scripts/garmin_data_extended.py respiration
 ```
 
-### Activity Metrics
+### Activity & Load
 
 ```bash
 # Intraday steps (total movement across tournament day)
@@ -81,103 +78,166 @@ python3 scripts/garmin_data_extended.py intensity_minutes
 # Hydration tracking (important during tournaments)
 python3 scripts/garmin_data_extended.py hydration
 
-# Detailed stress time-series (see stress between points/games)
+# Stress time-series (see stress between points/games)
 python3 scripts/garmin_data_extended.py stress_detailed
 
-# Intraday heart rate (all HR samples — see full game HR curve)
+# Intraday heart rate (all HR samples — full game HR curve)
 python3 scripts/garmin_data_extended.py hr_intraday
 ```
 
 ---
 
-## 🗺️ Activity File Analysis (FIT/GPX)
+## 🗺️ FIT File Analysis (Single Game/Training)
 
-Download and analyze FIT files from games to answer questions like:
-- "How many sprints did I hit in the second half?"
-- "What was my top speed during the final?"
-- "Was I running slower by the last game of the tournament?"
-
-### Download Activity Files
+FIT files contain raw sensor data recorded by your Garmin watch during an activity. This is the richest data source for frisbee performance.
 
 ```bash
-# Download FIT file (contains raw speed, HR, GPS data)
-python3 scripts/garmin_activity_files.py download --activity-id 12345678 --format fit
+# Analyze latest activity
+python3 scripts/frisbee_activity.py --latest
 
-# Download GPX file (for route/field visualization)
-python3 scripts/garmin_activity_files.py download --activity-id 12345678 --format gpx
+# Analyze specific game by ID
+python3 scripts/frisbee_activity.py --activity-id 12345678
+
+# Analyze activity on a specific date
+python3 scripts/frisbee_activity.py --date 2026-03-08
+
+# Save dashboard to file
+python3 scripts/frisbee_activity.py --latest --output ~/Desktop/game.html
 ```
 
-### Parse Activity Files
+### What FIT Analysis Produces
+
+| Metric | What it tells you |
+|--------|-------------------|
+| Sprint Count | How many times you accelerated above 14.4 km/h |
+| Sprint Peak Speed | Your fastest burst in each sprint |
+| Sprint Fatigue Index | Last-3 vs first-3 sprint speed ratio — did you slow down? |
+| Top Speed | Absolute fastest speed in the session |
+| High-Intensity Distance | Meters covered while sprinting |
+| HR Zone Distribution | Time in Zone 1–6 — did you hit Zone 4/5? |
+| **Ground Contact Time** | **Average stance time (ms) — rises as you fatigue** |
+| **GCT Trend** | **2nd half vs 1st half GCT — detects late-game fatigue** |
+
+**FIT data available per record:**
+- GPS coordinates, speed (m/s), heart rate
+- Stance time / Ground Contact Time (if watch + activity type supports it)
+- Lap splits — per-half or per-point breakdown
+- Distance, altitude
+
+---
+
+## 📈 Comparison & Season Analysis
 
 ```bash
-# Parse FIT file (sprint detection, speed, HR zones)
-python3 scripts/garmin_activity_files.py parse --file /tmp/activity_12345678.fit
+# Compare training sessions over last 90 days
+python3 scripts/frisbee_compare.py --mode training --days 90
 
-# Parse GPX file (movement heatmap, field coverage)
-python3 scripts/garmin_activity_files.py parse --file /tmp/activity_12345678.gpx
+# Compare tournament games
+python3 scripts/frisbee_compare.py --mode tournament --days 60
+
+# Training vs game intensity comparison
+python3 scripts/frisbee_compare.py --mode cross --days 60
+
+# Full season overview (HRV + load + speed trends)
+python3 scripts/frisbee_compare.py --mode season --days 180
 ```
 
-**FIT files contain (relevant to frisbee):**
-- GPS coordinates (lat/lon) — field coverage heatmap
-- Speed (m/s) — sprint detection
-- Heart rate — HR zone analysis
-- Lap splits — per-point or per-half breakdown
-- Altitude/elevation — useful for outdoor field context
-- Temperature
+### Charts Generated in Compare Mode
 
-### Query Activity Data
+| Chart | What it shows |
+|-------|---------------|
+| Top Speed Trend | Speed improving across sessions? |
+| Avg HR per Activity | Intensity level, color-coded by zone |
+| **Intensity Ceiling** | **Avg HR + Max HR per session with Zone 4/5 reference lines** |
+| Morning HRV Trend | Recovery quality before each session |
+| Activity Volume | Duration + distance across time |
+
+---
+
+## 🏆 Tournament Dashboard
 
 ```bash
-# What was my HR/speed at a specific point in the game?
-python3 scripts/garmin_activity_files.py query --file /tmp/activity_12345678.fit --distance 1500
-
-# What was my data at a specific time during the game?
-python3 scripts/garmin_activity_files.py query --file /tmp/activity_12345678.fit --time "2026-03-08T10:15:30"
+python3 scripts/frisbee_tournament.py \
+    --start 2026-03-08 --end 2026-03-10 \
+    --name "Spring Tournament 2026" \
+    --output ~/Desktop/tournament.html
 ```
 
-### Analyze Activity
+### Charts Generated
 
-```bash
-# Get comprehensive game statistics
-python3 scripts/garmin_activity_files.py analyze --file /tmp/activity_12345678.fit
-```
-
-**Returns (frisbee-relevant):**
-- Average/max/min heart rate
-- Average/max speed → top sprint speed
-- Total distance → field coverage
-- Duration
-- Elevation gain
+| Chart | What it shows |
+|-------|---------------|
+| Body Battery Fatigue Timeline | Energy levels across tournament days |
+| Per-Game HR Intensity | Avg + Max HR for each game |
+| Heart Rate Recovery (HRR) | How fast HR dropped after each game (1 min / 2 min) |
+| Overnight Recovery | Sleep hours + HRV per night |
 
 ---
 
 ## 🔍 Frisbee Use Cases
 
 ### Post-Game Analysis
-- "How many sprints did I hit in yesterday's game?"
-- "What was my top sprint speed?"
-- "Was my Sprint Fatigue Index above 0.85?"
+- "How many sprints did I hit yesterday?"
+- "Did my sprint speed drop in the second half?" → Sprint Fatigue Index
 - "How long was I in Zone 4+ during the game?"
+- "Did my ground contact time increase in the second half?" → fatigue signal
 
-### Tournament Day Monitoring
+### Tournament Monitoring
 - "What was my Body Battery before game 1, 2, and 3?"
-- "How did my HR recovery look after each game?"
-- "Did I have enough rest stress between games?"
+- "How fast did my HR recover between games?"
+- "Which game had the best/worst recovery curve?"
 
 ### Training Quality
-- "Is my practice intensity matching game intensity?"
-- "Are my weekly training minutes enough to maintain fitness?"
-- "How does my VO2 max trend across the season?"
+- "Is my practice intensity matching game intensity?" → cross mode
+- "Did I actually reach Zone 5 in today's training?"
+- "How does my max HR compare between training and games?"
 
 ### Recovery Tracking
 - "What's my training readiness today after the tournament?"
-- "When did my Body Battery start draining yesterday?"
-- "Did I get enough deep sleep the night before the final?"
+- "Did I get enough deep sleep before the final?"
+- "Is my HRV trending up as I get fitter?"
 
 ### Season-Long Trends
 - "Is my top speed improving across games this season?"
-- "Is my HRV trending up as I get fitter?"
-- "How does my sleep quality compare during tournament weeks vs training weeks?"
+- "How does sleep quality compare during tournament vs training weeks?"
+- "Am I accumulating too much fatigue?" → HRV + resting HR trends
+
+---
+
+## 🛠️ Advanced Tips
+
+### Finding an Activity ID
+
+The activity ID is in the Garmin Connect URL:
+```
+https://connect.garmin.com/modern/activity/12345678
+                                        ^^^^^^^^
+```
+
+Or fetch recent activity IDs:
+```bash
+python3 scripts/garmin_data.py activities --days 7
+```
+
+### Activity Classification
+
+`frisbee_compare.py` classifies activities by name keywords:
+
+| Category | Keywords |
+|----------|----------|
+| Game | `game`, `match`, `tournament`, `vs`, `finals`, `semifinal`, `比赛` |
+| Training | `practice`, `training`, `train`, `drill`, `scrimmage`, `练`, `训` |
+
+Name your Garmin activities consistently to get accurate classification.
+
+### Ground Contact Time Availability
+
+GCT (`stance_time`) is recorded when:
+- You use a running activity type on your Garmin watch
+- Your watch model supports running dynamics (Forerunner 955/965, Fenix 7+, etc.)
+- A foot pod or HRM-Pro is paired (on older models)
+
+If GCT data is unavailable, the GCT chart and stat card will be hidden automatically.
 
 ---
 
@@ -187,55 +247,8 @@ python3 scripts/garmin_activity_files.py analyze --file /tmp/activity_12345678.f
 pip3 install garminconnect fitparse gpxpy
 ```
 
-- **garminconnect**: Garmin Connect API wrapper
-- **fitparse**: Parse FIT files (Garmin's binary format) — required for sprint detection
-- **gpxpy**: Parse GPX files (GPS track format)
-
----
-
-## 🛠️ Advanced Tips
-
-### Get Activity ID
-
-The activity ID is visible in the Garmin Connect URL:
-```
-https://connect.garmin.com/modern/activity/12345678
-                                        ^^^^^^^^
-```
-
-Or find it programmatically:
-```bash
-python3 scripts/garmin_data.py activities --days 7
-# Look for "activityId" in each activity
-```
-
-### Batch Processing a Tournament
-
-```bash
-# Get activity IDs for tournament weekend
-activities=$(python3 scripts/garmin_data.py activities --days 3 | jq -r '.activities[].activityId')
-
-# Download all FIT files
-for id in $activities; do
-  python3 scripts/garmin_activity_files.py download --activity-id $id --format fit
-done
-```
-
-### Visualization Ideas
-
-1. **Sprint heatmap**: Color GPS track by speed (slow = blue, sprint = red)
-2. **HR zone timeline**: Color-coded chart across full game duration
-3. **Sprint peak trend**: Bar chart of each sprint's peak speed — detect fatigue
-4. **Field coverage**: GPS heatmap showing which areas of the field you covered
-5. **Tournament fatigue curve**: Body Battery across all tournament days
-
----
-
-## 🚀 Future Enhancements
-
-- [ ] Automatic frisbee activity classification (detect field sport from GPS + HR pattern)
-- [ ] Point-by-point HR recovery analysis
-- [ ] Sprint count vs. game outcome correlation
-- [ ] Weather/temperature impact on performance
-- [ ] Season fitness trajectory (VO2 max trend aligned with tournament calendar)
-- [ ] Team comparison (if multiple players use this skill)
+| Package | Purpose |
+|---------|---------|
+| `garminconnect` | Garmin Connect API wrapper |
+| `fitparse` | Parse FIT binary files — required for sprint detection, GCT |
+| `gpxpy` | Parse GPX files (GPS track format) |

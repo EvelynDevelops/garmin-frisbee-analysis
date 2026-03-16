@@ -253,6 +253,23 @@ def analyze_fit_activity(client, activity_id, max_hr=None):
         if len(hi_dists) >= 2:
             hi_distance_m = round(hi_dists[-1] - hi_dists[0])
 
+    # Ground Contact Time (stance_time in FIT, unit: ms)
+    gct_raw = [(r["stance_time"], _ts(r)) for r in records if r.get("stance_time") and r["stance_time"] > 0 and _ts(r)]
+    avg_gct_ms = round(sum(v for v, _ in gct_raw) / len(gct_raw)) if gct_raw else None
+    gct_trend_ratio = None
+    if len(gct_raw) >= 10:
+        mid = len(gct_raw) // 2
+        first_avg = sum(v for v, _ in gct_raw[:mid]) / mid
+        second_avg = sum(v for v, _ in gct_raw[mid:]) / (len(gct_raw) - mid)
+        if first_avg > 0:
+            gct_trend_ratio = round(second_avg / first_avg, 3)
+    # GCT timeline for chart (downsample)
+    gct_timeline = []
+    if gct_raw and ts_first:
+        step = max(1, len(gct_raw) // 400)
+        for v, ts in gct_raw[::step]:
+            gct_timeline.append({"minutes": round((ts - ts_first) / 60, 2), "gct_ms": v})
+
     # Sprints
     sprints = detect_sprints(records)
     fatigue_idx = sprint_fatigue_index(sprints)
@@ -283,6 +300,8 @@ def analyze_fit_activity(client, activity_id, max_hr=None):
             "high_intensity_distance_m": hi_distance_m,
             "avg_hr": round(sum(hr_values) / len(hr_values)) if hr_values else None,
             "max_hr": max(hr_values) if hr_values else None,
+            "avg_ground_contact_ms": avg_gct_ms,
+            "gct_trend_ratio": gct_trend_ratio,
         },
         "sprints": sprints,
         "sprint_count": len(sprints),
@@ -290,6 +309,7 @@ def analyze_fit_activity(client, activity_id, max_hr=None):
         "hr_zones": zones,
         "speed_timeline": timeline,
         "sprint_events": sprint_events,
+        "gct_timeline": gct_timeline,
     }
 
 

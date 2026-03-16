@@ -1,5 +1,30 @@
 # Changelog
 
+## v1.1.2 (2026-03-16)
+
+### Security & Analysis Improvements
+
+**Security:**
+- Removed `config.example.json` — credentials must now be set via environment variables only (`GARMIN_EMAIL`, `GARMIN_PASSWORD`)
+- Updated `install.sh` to guide users toward env var setup instead of config file
+- Updated `SKILL.md` metadata to include `garmin_auth.py login` as an explicit install step
+
+**New: Ground Contact Time Analysis (`frisbee_activity.py` + `frisbee_chart.py`):**
+- Extracts `stance_time` from FIT files — average GCT displayed as a stat card
+- GCT Trend Ratio: 2nd half vs 1st half average — rising GCT indicates late-game fatigue
+- New GCT timeline chart in the activity dashboard (shown when data is available)
+
+**New: Intensity Ceiling Chart (`frisbee_compare.py`):**
+- New chart showing Avg HR + Max HR as grouped bars per activity
+- Zone 4 (148 bpm) and Zone 5 (167 bpm) reference lines overlaid
+- Answers "did I actually hit high-intensity zones?" at a glance
+- Added `chartjs-plugin-annotation` to compare dashboard
+
+**References:**
+- Rewrote `references/extended_capabilities.md` to reflect actual script capabilities, new metrics, and GCT availability notes
+
+---
+
 ## v1.0.0 (2026-03-11)
 
 ### Initial Release

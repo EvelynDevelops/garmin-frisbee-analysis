@@ -546,6 +546,16 @@ def _activity_stats_cards(analysis):
             fi_label = f"{fi:.2f} Fatigued"
     else:
         fi_label = "—"
+    gct = s.get("avg_ground_contact_ms")
+    gct_trend = s.get("gct_trend_ratio")
+    if gct:
+        if gct_trend is not None:
+            gct_label = f"{gct} ms ({'↑ Fatigue' if gct_trend > 1.05 else '→ Stable'})"
+        else:
+            gct_label = f"{gct} ms"
+    else:
+        gct_label = "—"
+
     return {
         "Duration": f"{dur} min",
         "Total Distance": f"{round(dist/1000,2)} km" if dist else "—",
@@ -553,6 +563,7 @@ def _activity_stats_cards(analysis):
         "Top Speed": f"{top_spd} km/h" if top_spd else "—",
         "Sprint Fatigue": fi_label,
         "Hi-Intensity Dist": f"{round(hi_dist)} m" if hi_dist else "—",
+        "Avg Ground Contact": gct_label,
     }
 
 
@@ -759,6 +770,46 @@ def _activity_hr_zones_chart(analysis):
     }
 
 
+def _activity_gct_chart(analysis):
+    timeline = analysis.get("gct_timeline", [])
+    if not timeline:
+        return None
+    s = analysis.get("summary", {})
+    trend = s.get("gct_trend_ratio")
+    trend_note = ""
+    if trend is not None:
+        trend_note = f"  — 2nd half / 1st half: {trend:.2f} ({'↑ fatigue signal' if trend > 1.05 else '→ stable'})"
+
+    return {
+        "title": f"Ground Contact Time over Activity{trend_note}",
+        "chart": {
+            "type": "line",
+            "data": {
+                "datasets": [{
+                    "label": "Ground Contact Time (ms)",
+                    "data": [{"x": p["minutes"], "y": p["gct_ms"]} for p in timeline],
+                    "borderColor": "rgba(183, 148, 246, 0.9)",
+                    "backgroundColor": "rgba(183, 148, 246, 0.08)",
+                    "borderWidth": 1.5,
+                    "tension": 0.2,
+                    "fill": True,
+                    "pointRadius": 0,
+                }]
+            },
+            "options": {
+                "responsive": True,
+                "parsing": False,
+                "animation": False,
+                "scales": {
+                    "x": {"type": "linear", "title": {"display": True, "text": "Time (min)"}},
+                    "y": {"title": {"display": True, "text": "GCT (ms)"}, "min": 0},
+                },
+                "plugins": {"legend": {"display": False}}
+            }
+        }
+    }
+
+
 def generate_activity_html(analysis):
     activity_id = analysis.get("activity_id", "")
     generated = datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -768,12 +819,13 @@ def generate_activity_html(analysis):
     speed_cfg = _activity_speed_chart(analysis)
     sprint_cfg = _activity_sprint_fatigue_chart(analysis)
     zone_cfg = _activity_hr_zones_chart(analysis)
+    gct_cfg = _activity_gct_chart(analysis)
 
     # Annotations for speed chart (sprint highlight bands)
     annotations = speed_cfg.pop("annotations", [])
     annotations_json = json.dumps(annotations)
 
-    charts = [c for c in [speed_cfg, sprint_cfg, zone_cfg] if c]
+    charts = [c for c in [speed_cfg, sprint_cfg, zone_cfg, gct_cfg] if c]
     payload_json = json.dumps({"stats": stats, "charts": charts})
 
     return f"""<!DOCTYPE html>

@@ -1,7 +1,7 @@
 ---
 name: garmin-frisbee-analysis
-description: Ultimate Frisbee performance analytics powered by Garmin data. Ask "how many sprints did I hit in yesterday's game?", "was my recovery fast enough between points?", "am I more fatigued than last tournament?". Analyze sprint count & fatigue, top speed, heart rate zones, Body Battery, HRV trends, sleep quality, and generate interactive dashboards. Compare tournaments vs tournaments, training vs games, and track season-long fitness trends. Built for competitive Ultimate Frisbee players.
-version: 1.1.1
+description: Ultimate Frisbee performance analytics powered by Garmin data. Analyzes and monitors game and training data . Generates interactive HTML dashboards for post-game review, tournament fatigue tracking, and season-long trend analysis. Supports four comparison modes: training vs training, tournament vs tournament, training vs game intensity, and early vs late season. Built for competitive Ultimate Frisbee players who want data-driven insight into performance, recovery, and fitness progression.
+version: 1.1.2
 author: Evelyn & Claude
 homepage: https://github.com/EvelynDevelops/garmin-frisbee-analysis
 metadata: {"clawdbot":{"emoji":"🥏","requires":{"env":["GARMIN_EMAIL","GARMIN_PASSWORD"]},"install":[{"id":"garminconnect","kind":"python","package":"garminconnect","label":"Install garminconnect (pip)"},{"id":"fitparse","kind":"python","package":"fitparse","label":"Install fitparse (pip)"},{"id":"gpxpy","kind":"python","package":"gpxpy","label":"Install gpxpy (pip)"},{"id":"garmin-auth","kind":"shell","command":"python3 scripts/garmin_auth.py login","label":"Authenticate with Garmin Connect"}]}}

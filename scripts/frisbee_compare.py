@@ -281,7 +281,80 @@ def generate_comparison_html(activities, mode, days):
         }
     }
 
-    charts = [c for c in [chart_speed, chart_hr, chart_hrv, chart_volume] if c]
+    # ── Chart 5: Max HR vs Avg HR with zone reference lines ──
+    # Shows whether activities actually reached high-intensity zones
+    zone4_threshold = 148  # ~80% of 185 bpm estimated max
+    zone5_threshold = 167  # ~90% of 185 bpm estimated max
+    chart_intensity = {
+        "title": "Intensity Ceiling — Did You Hit High Zones?  (dashed = Zone 4/5 thresholds)",
+        "chart": {
+            "type": "bar",
+            "data": {
+                "labels": [f"{a['date'][:5]} {a['name'][:10]}" for a in relevant_for_hr],
+                "datasets": [
+                    {
+                        "label": "Avg HR (bpm)",
+                        "data": [a.get("avg_hr") for a in relevant_for_hr],
+                        "backgroundColor": "rgba(99, 179, 237, 0.65)",
+                        "borderWidth": 0,
+                    },
+                    {
+                        "label": "Max HR (bpm)",
+                        "data": [a.get("max_hr") for a in relevant_for_hr],
+                        "backgroundColor": "rgba(252, 129, 74, 0.65)",
+                        "borderWidth": 0,
+                    },
+                ]
+            },
+            "options": {
+                "responsive": True,
+                "scales": {
+                    "y": {
+                        "title": {"display": True, "text": "Heart Rate (bpm)"},
+                        "min": 80,
+                        "suggestedMax": 200,
+                    }
+                },
+                "plugins": {
+                    "legend": {"display": True},
+                    "annotation": {
+                        "annotations": {
+                            "zone4line": {
+                                "type": "line",
+                                "yMin": zone4_threshold, "yMax": zone4_threshold,
+                                "borderColor": "rgba(246, 173, 85, 0.7)",
+                                "borderWidth": 1.5,
+                                "borderDash": [6, 4],
+                                "label": {
+                                    "content": f"Zone 4 ({zone4_threshold} bpm)",
+                                    "display": True, "position": "end",
+                                    "color": "rgba(246, 173, 85, 0.9)",
+                                    "backgroundColor": "rgba(0,0,0,0)",
+                                    "font": {"size": 11},
+                                }
+                            },
+                            "zone5line": {
+                                "type": "line",
+                                "yMin": zone5_threshold, "yMax": zone5_threshold,
+                                "borderColor": "rgba(252, 129, 74, 0.7)",
+                                "borderWidth": 1.5,
+                                "borderDash": [6, 4],
+                                "label": {
+                                    "content": f"Zone 5 ({zone5_threshold} bpm)",
+                                    "display": True, "position": "end",
+                                    "color": "rgba(252, 129, 74, 0.9)",
+                                    "backgroundColor": "rgba(0,0,0,0)",
+                                    "font": {"size": 11},
+                                }
+                            },
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    charts = [c for c in [chart_speed, chart_hr, chart_intensity, chart_hrv, chart_volume] if c]
 
     # Summary stats
     all_relevant = activities
@@ -318,6 +391,7 @@ def generate_comparison_html(activities, mode, days):
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{title}</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         body {{
