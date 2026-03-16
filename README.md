@@ -24,8 +24,8 @@ clawdhub install garmin-frisbee-analysis
 cd ~/.clawdbot/skills
 git clone https://github.com/EvelynDevelops/garmin-frisbee-analysis.git garmin-frisbee-analysis
 
-# Install dependencies
-pip3 install garminconnect fitparse gpxpy
+# Install dependencies (versions pinned in requirements.txt)
+pip3 install -r requirements.txt
 
 # Configure credentials and authenticate
 python3 scripts/garmin_auth.py login

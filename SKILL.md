@@ -4,7 +4,11 @@ description: Ultimate Frisbee performance analytics powered by Garmin data. Anal
 version: 1.1.3
 author: Evelyn & Claude
 homepage: https://github.com/EvelynDevelops/garmin-frisbee-analysis
-metadata: {"clawdbot":{"emoji":"🥏","requires":{"env":["GARMIN_EMAIL","GARMIN_PASSWORD"]},"install":[{"id":"garminconnect","kind":"python","package":"garminconnect","label":"Install garminconnect (pip)"},{"id":"fitparse","kind":"python","package":"fitparse","label":"Install fitparse (pip)"},{"id":"gpxpy","kind":"python","package":"gpxpy","label":"Install gpxpy (pip)"},{"id":"garmin-auth","kind":"shell","command":"python3 scripts/garmin_auth.py login","label":"Authenticate with Garmin Connect"}]}}
+env:
+  - GARMIN_EMAIL
+  - GARMIN_PASSWORD
+install: pip install -r requirements.txt && python3 scripts/garmin_auth.py login
+metadata: {"clawdbot":{"emoji":"🥏","requires":{"env":["GARMIN_EMAIL","GARMIN_PASSWORD"]},"install":[{"id":"pip-deps","kind":"shell","command":"pip3 install -r requirements.txt","label":"Install Python dependencies"},{"id":"garmin-auth","kind":"shell","command":"python3 scripts/garmin_auth.py login","label":"Authenticate with Garmin Connect"}]}}
 ---
 
 # Garmin Frisbee Analysis
@@ -23,14 +27,19 @@ Analyze Garmin health and performance data specifically for Ultimate Frisbee pla
 ### 1. Install Dependencies
 
 ```bash
-pip3 install garminconnect fitparse gpxpy
+pip3 install -r requirements.txt
 ```
+
+Pinned versions are in [requirements.txt](requirements.txt):
+- `garminconnect>=0.2.19` — Garmin Connect API client
+- `fitparse>=3.2.0` — FIT file parsing for activity data
+- `gpxpy>=1.3.5` — GPX file parsing
 
 ### 2. Configure Credentials
 
-> **Security note**: Never put your password in `config.json` and commit it. Use environment variables instead.
+> **Why email + password?** Garmin does not expose a public OAuth API. The `garminconnect` library authenticates via Garmin's SSO using your account credentials, exactly the same flow as the Garmin Connect mobile app. Credentials are used **once** to obtain a session token and are **never written to disk**. All subsequent requests use the stored token.
 
-Set these in your shell profile (`~/.zshrc` or `~/.bashrc`):
+Set `GARMIN_EMAIL` and `GARMIN_PASSWORD` in your shell profile (`~/.zshrc` or `~/.bashrc`):
 
 ```bash
 export GARMIN_EMAIL="your-email@example.com"
@@ -234,12 +243,22 @@ Pre-game value is the key readiness indicator. `≥ 70` = ready to go, `50–69`
 
 ---
 
-## Privacy
+## Privacy & Security
 
-- Credentials are **never stored on disk** — only used once to obtain session tokens
-- Session tokens stored locally in `~/.clawdbot/garmin/` (permissions 700)
-- No data sent anywhere except Garmin's official servers
-- Delete tokens: `rm -rf ~/.clawdbot/garmin/`
+**Credentials**
+- `GARMIN_EMAIL` and `GARMIN_PASSWORD` are read from environment variables at runtime only
+- Credentials are **never written to disk** — used once to obtain a session token, then discarded
+- No config file stores credentials
+
+**Session tokens**
+- Stored in `~/.clawdbot/garmin/` with directory permissions `700` (owner read/write/execute only)
+- Managed by the `garth` library (part of `garminconnect`); format is an opaque token bundle, not plaintext password
+- To revoke: `rm -rf ~/.clawdbot/garmin/` — next login will re-authenticate
+
+**Network**
+- All API calls go to `connect.garmin.com` only
+- Generated HTML dashboards load Chart.js from `cdn.jsdelivr.net` (versions pinned: `chart.js@4.4.0`, `chartjs-plugin-annotation@3.0.1`) — requires internet access when viewing dashboards
+- No data is sent to any third party
 
 ---
 
