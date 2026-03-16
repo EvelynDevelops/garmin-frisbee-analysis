@@ -8,7 +8,7 @@ env:
   - GARMIN_EMAIL
   - GARMIN_PASSWORD
 install: pip install -r requirements.txt && python3 scripts/garmin_auth.py login
-metadata: {"clawdbot":{"emoji":"🥏","requires":{"env":["GARMIN_EMAIL","GARMIN_PASSWORD"]},"install":[{"id":"pip-deps","kind":"shell","command":"pip3 install -r requirements.txt","label":"Install Python dependencies"},{"id":"garmin-auth","kind":"shell","command":"python3 scripts/garmin_auth.py login","label":"Authenticate with Garmin Connect"}]}}
+metadata: {"requires":{"env":["GARMIN_EMAIL","GARMIN_PASSWORD"]},"install":[{"id":"pip-deps","kind":"shell","command":"pip3 install -r requirements.txt","label":"Install Python dependencies"},{"id":"garmin-auth","kind":"shell","command":"python3 scripts/garmin_auth.py login","label":"Authenticate with Garmin Connect"}],"tokenStorage":"~/.clawdbot/garmin/ (permissions 700, session tokens only, no plaintext credentials)","clawdbot":{"emoji":"🥏"}}
 ---
 
 # Garmin Frisbee Analysis
