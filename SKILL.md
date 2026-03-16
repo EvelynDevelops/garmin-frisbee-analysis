@@ -247,7 +247,7 @@ Pre-game value is the key readiness indicator. `≥ 70` = ready to go, `50–69`
 
 **Credentials**
 - `GARMIN_EMAIL` and `GARMIN_PASSWORD` are read from environment variables at runtime only
-- Credentials are **never written to disk** — used once to obtain a session token, then discarded
+- The Garmin password is **never written to disk or logged** — used only during the authentication step, then discarded
 - No config file stores credentials
 
 **Session tokens**
