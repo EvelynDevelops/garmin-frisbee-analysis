@@ -60,6 +60,7 @@ python3 scripts/garmin_auth.py login
 garmin-frisbee-analysis/
 ├── SKILL.md                          # Clawdbot setup & usage
 ├── README.md                         # This file
+├── requirements.txt                  # Pinned Python dependencies
 ├── install.sh                        # Automated installation script
 ├── scripts/
 │   ├── garmin_auth.py               # Authentication helper

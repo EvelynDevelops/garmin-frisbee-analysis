@@ -111,8 +111,8 @@ def main():
     
     # Login command
     login_parser = subparsers.add_parser("login", help="Login to Garmin Connect")
-    login_parser.add_argument("--email", help="Garmin account email (or set via env/config)")
-    login_parser.add_argument("--password", help="Garmin account password (or set via env/config)")
+    login_parser.add_argument("--email", help="Garmin account email (or set GARMIN_EMAIL env var)")
+    login_parser.add_argument("--password", help="Garmin account password (or set GARMIN_PASSWORD env var)")
     
     # Status command
     subparsers.add_parser("status", help="Check authentication status")
