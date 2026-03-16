@@ -2,14 +2,14 @@
 
 ## v1.1.3 (2026-03-16)
 
-### Documentation & Registry Consistency
+### Documentation
 
-- Added top-level `env` and `install` fields to SKILL.md frontmatter so registry parsers can detect required environment variables without parsing the clawdbot metadata JSON
-- Replaced "credentials never stored on disk" with precise two-part statement: password never written to disk; session tokens stored locally under `~/.clawdbot/garmin/` (permissions 700)
-- Unified credential/token storage language across README.md, SKILL.md, and CHANGELOG.md
-- Added `requirements.txt` with pinned minimum versions (`garminconnect>=0.2.19`, `fitparse>=3.2.0`, `gpxpy>=1.3.5`)
-- Updated `install.sh` and all docs to reference `requirements.txt`
-- Documented CDN dependency: Chart.js loaded from `cdn.jsdelivr.net` (versions pinned), required for viewing HTML dashboards
+- Added `__meta.json` with explicit `requires.env` and `install` fields
+- Added top-level `env` and `install` fields to SKILL.md frontmatter
+- Clarified storage behaviour: password is never written to disk; session tokens are stored under `~/.clawdbot/garmin/` (permissions 700)
+- Added `requirements.txt` with pinned minimum versions
+- Updated `install.sh` and docs to reference `requirements.txt`
+- Noted Chart.js CDN dependency (`cdn.jsdelivr.net`, versions pinned) in privacy sections
 
 ---
 

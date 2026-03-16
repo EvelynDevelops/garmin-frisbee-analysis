@@ -256,9 +256,9 @@ Pre-game value is the key readiness indicator. `≥ 70` = ready to go, `50–69`
 - To revoke: `rm -rf ~/.clawdbot/garmin/` — next login will re-authenticate
 
 **Network**
+- Credentials are used only to authenticate with Garmin Connect and are not transmitted to any third-party service
 - All API calls go to `connect.garmin.com` only
 - Generated HTML dashboards load Chart.js from `cdn.jsdelivr.net` (versions pinned: `chart.js@4.4.0`, `chartjs-plugin-annotation@3.0.1`) — requires internet access when viewing dashboards
-- No data is sent to any third party
 
 ---
 

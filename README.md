@@ -81,7 +81,7 @@ This skill requires `GARMIN_EMAIL` and `GARMIN_PASSWORD` to authenticate with Ga
 
 - **Password**: never written to disk or logged — used only during the authentication step, then discarded
 - **Session tokens**: stored locally in `~/.clawdbot/garmin/` with restricted permissions (700) to avoid repeated logins; not plaintext credentials
-- **Network**: requests go only to `connect.garmin.com`; HTML dashboards load Chart.js from `cdn.jsdelivr.net` (pinned versions) — no other third-party endpoints
+- **Network**: credentials are used only to authenticate with Garmin Connect and are not transmitted to any third-party service; HTML dashboards load Chart.js from `cdn.jsdelivr.net` (pinned versions) — no other external endpoints
 - Open source — audit the code yourself
 
 ## 📚 Documentation

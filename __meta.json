@@ -1,0 +1,33 @@
+{
+  "name": "garmin-frisbee-analysis",
+  "version": "1.1.3",
+  "description": "Ultimate Frisbee performance analytics powered by Garmin data. Generates interactive HTML dashboards for post-game review, tournament fatigue tracking, and season-long trend analysis.",
+  "author": "Evelyn & Claude",
+  "homepage": "https://github.com/EvelynDevelops/garmin-frisbee-analysis",
+  "license": "MIT",
+  "requires": {
+    "env": [
+      "GARMIN_EMAIL",
+      "GARMIN_PASSWORD"
+    ]
+  },
+  "install": [
+    {
+      "id": "pip-deps",
+      "kind": "shell",
+      "command": "pip3 install -r requirements.txt",
+      "label": "Install Python dependencies"
+    },
+    {
+      "id": "garmin-auth",
+      "kind": "shell",
+      "command": "python3 scripts/garmin_auth.py login",
+      "label": "Authenticate with Garmin Connect"
+    }
+  ],
+  "privacy": {
+    "credentials": "GARMIN_EMAIL and GARMIN_PASSWORD are read from environment variables at runtime. The password is never written to disk or logged.",
+    "token_storage": "Session tokens are stored locally under ~/.clawdbot/garmin/ with permissions 700. Tokens are opaque bundles managed by the garth library; no plaintext credentials are stored.",
+    "network": "All API requests go to connect.garmin.com only. HTML dashboards load Chart.js from cdn.jsdelivr.net (versions pinned). No credentials or user data are transmitted to third-party services."
+  }
+}
