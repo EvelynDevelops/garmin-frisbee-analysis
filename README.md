@@ -77,8 +77,9 @@ garmin-frisbee-analysis/
 
 ## 🔒 Privacy & Security
 
-- Credentials stored locally (never sent to third parties)
-- Session tokens auto-refresh (no repeated logins)
+- Credentials are never stored on disk — only used once to obtain session tokens
+- Session tokens stored locally in `~/.clawdbot/garmin/` (permissions 700)
+- Tokens auto-refresh (no repeated logins)
 - Connects only to Garmin's official API
 - No cloud storage or external data sharing
 - Open source - audit the code yourself
@@ -105,7 +106,7 @@ garmin-frisbee-analysis/
 ## 🙏 Credits
 
 - **Author**: Evelyn & Claude
-- **Version**: 1.1.1
+- **Version**: 1.1.3
 - **License**: MIT
 - **Dependencies**: [python-garminconnect](https://github.com/cyberjunky/python-garminconnect), fitparse, gpxpy
 

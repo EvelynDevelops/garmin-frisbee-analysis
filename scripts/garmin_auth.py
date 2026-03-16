@@ -4,7 +4,6 @@ Garmin Connect authentication helper.
 Handles login and stores session tokens.
 """
 
-import json
 import os
 import sys
 from pathlib import Path
@@ -19,19 +18,6 @@ except ImportError:
     sys.exit(1)
 
 TOKEN_DIR = Path.home() / ".clawdbot" / "garmin"
-CONFIG_FILE = Path(__file__).parent.parent / "config.json"
-
-
-def load_config():
-    """Load credentials from config file."""
-    if not CONFIG_FILE.exists():
-        return None
-    try:
-        with open(CONFIG_FILE) as f:
-            return json.load(f)
-    except Exception as e:
-        print(f"⚠️  Failed to load config: {e}", file=sys.stderr)
-        return None
 
 
 def login(email, password):
@@ -137,24 +123,16 @@ def main():
         email = args.email
         password = args.password
         
-        # Priority: CLI args > config.json > environment variables
-        if not email or not password:
-            config = load_config()
-            if config:
-                email = email or config.get("email")
-                password = password or config.get("password")
-        
+        # Priority: CLI args > environment variables
         if not email or not password:
             email = email or os.getenv("GARMIN_EMAIL")
             password = password or os.getenv("GARMIN_PASSWORD")
-        
+
         if not email or not password:
             print("❌ Email and password required", file=sys.stderr)
             print("Set via:", file=sys.stderr)
             print("  1. CLI: --email and --password", file=sys.stderr)
-            print("  2. Config: create config.json from config.example.json", file=sys.stderr)
-            print("  3. Env vars: GARMIN_EMAIL and GARMIN_PASSWORD", file=sys.stderr)
-            print("  4. Clawdbot config: skills.entries.garmin-frisbee-analysis.env", file=sys.stderr)
+            print("  2. Env vars: GARMIN_EMAIL and GARMIN_PASSWORD", file=sys.stderr)
             sys.exit(1)
         
         success = login(email, password)

@@ -1,7 +1,7 @@
 ---
 name: garmin-frisbee-analysis
 description: Ultimate Frisbee performance analytics powered by Garmin data. Analyzes and monitors game and training data . Generates interactive HTML dashboards for post-game review, tournament fatigue tracking, and season-long trend analysis. Supports four comparison modes: training vs training, tournament vs tournament, training vs game intensity, and early vs late season. Built for competitive Ultimate Frisbee players who want data-driven insight into performance, recovery, and fitness progression.
-version: 1.1.2
+version: 1.1.3
 author: Evelyn & Claude
 homepage: https://github.com/EvelynDevelops/garmin-frisbee-analysis
 metadata: {"clawdbot":{"emoji":"🥏","requires":{"env":["GARMIN_EMAIL","GARMIN_PASSWORD"]},"install":[{"id":"garminconnect","kind":"python","package":"garminconnect","label":"Install garminconnect (pip)"},{"id":"fitparse","kind":"python","package":"fitparse","label":"Install fitparse (pip)"},{"id":"gpxpy","kind":"python","package":"gpxpy","label":"Install gpxpy (pip)"},{"id":"garmin-auth","kind":"shell","command":"python3 scripts/garmin_auth.py login","label":"Authenticate with Garmin Connect"}]}}
@@ -30,31 +30,11 @@ pip3 install garminconnect fitparse gpxpy
 
 > **Security note**: Never put your password in `config.json` and commit it. Use environment variables instead.
 
-#### Recommended: Environment Variables
-
 Set these in your shell profile (`~/.zshrc` or `~/.bashrc`):
 
 ```bash
 export GARMIN_EMAIL="your-email@example.com"
 export GARMIN_PASSWORD="your-password"
-```
-
-Or configure via Clawdbot's skill settings:
-
-```json
-{
-  "skills": {
-    "entries": {
-      "garmin-frisbee-analysis": {
-        "enabled": true,
-        "env": {
-          "GARMIN_EMAIL": "your-email@example.com",
-          "GARMIN_PASSWORD": "your-password"
-        }
-      }
-    }
-  }
-}
 ```
 
 ### 3. Authenticate
@@ -256,9 +236,10 @@ Pre-game value is the key readiness indicator. `≥ 70` = ready to go, `50–69`
 
 ## Privacy
 
-- Credentials stored locally in `~/.clawdbot/garmin-tokens.json`
+- Credentials are **never stored on disk** — only used once to obtain session tokens
+- Session tokens stored locally in `~/.clawdbot/garmin/` (permissions 700)
 - No data sent anywhere except Garmin's official servers
-- Delete tokens: `rm ~/.clawdbot/garmin-tokens.json`
+- Delete tokens: `rm -rf ~/.clawdbot/garmin/`
 
 ---
 
@@ -272,9 +253,9 @@ Pre-game value is the key readiness indicator. `≥ 70` = ready to go, `50–69`
 
 ## Version Info
 
-- **Version**: 1.0.0
+- **Version**: 1.1.3
 - **Created**: 2026-03-11
-- **Updated**: 2026-03-11
+- **Updated**: 2026-03-16
 - **Author**: Evelyn & Claude
 - **License**: MIT
 - **Dependencies**: garminconnect, fitparse, gpxpy
